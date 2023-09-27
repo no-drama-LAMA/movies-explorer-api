@@ -38,7 +38,7 @@ userSchema.statics.findUserByCredentials = function findUserByCredentials(email,
           if (!matched) {
             throw new UnauthorizedError('Неправильные почта или пароль');
           }
-          return user; // теперь user доступен
+          return user; //теперь user доступен
         });
     });
 };
