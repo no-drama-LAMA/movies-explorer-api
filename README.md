@@ -13,4 +13,4 @@ https://github.com/no-drama-LAMA/movies-explorer-api
 
 IP 51.250.93.109
 
-URL: https://api.movies.explorer.nomoredomainsrocks.ru
+Backend https://api.movies.explorer.nomoredomainsrocks.ru
