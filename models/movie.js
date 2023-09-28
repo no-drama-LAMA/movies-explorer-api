@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const validator = require('validator');
 
 const movieSchema = new mongoose.Schema({
@@ -46,7 +46,7 @@ const movieSchema = new mongoose.Schema({
       message: 'URL указан неправильно',
     },
   },
-  owner: { // ссылка на модель автора карточки
+  owner: {
     type: mongoose.Schema.Types.ObjectId, // тип ObjectId
     required: true, // обязательное поле
     ref: 'user',

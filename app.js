@@ -5,20 +5,20 @@ const rateLimit = require('express-rate-limit');
 const { errors } = require('celebrate');
 const express = require('express');
 const mongoose = require('mongoose');
-const NotFoundError = require('./errors/NotFound');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const errorHandler = require('./middlewares/errorHandler');
 
-const { PORT = 3000, DB_URL = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
+const { PORT = 3000, DB_URL = 'mongodb://127.0.0.1:27017/moviesexplorerdb' } = process.env;
 
 const app = express();
 
 app.use(cors({
   origin: [
-    'https://react.mesto.api.full.nomoredomainsrocks.ru',
-    'http://react.mesto.api.full.nomoredomainsrocks.ru',
+    'https://movies.explorer.nomoredomainsrocks.ru',
+    'http://api.movies.explorer.nomoredomainsrocks.ru',
     'https://localhost:3000',
   ],
-  methods: ['GET', 'PUT', 'POST', 'DELETE'],
+  methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH'],
   allowedHeaders: ['Authorization', 'Content-Type'],
 }));
 
@@ -43,28 +43,12 @@ app.use(limiter);
 
 app.use('/', require('./routes/index'));
 
-app.use('*', (req, res, next) => {
-  next(new NotFoundError('Страница не существует'));
-});
-
 app.use(errorLogger); // подключаем логгер ошибок
 
 // обработчики ошибок
 app.use(errors()); // обработчик ошибок celebrate
 
-// наш централизованный обработчик
-app.use((err, req, res, next) => {
-  // если у ошибки нет статуса, выставляем 500
-  const { statusCode = 500, message } = err;
-
-  res.status(statusCode)
-    .send({
-      // проверяем статус и выставляем сообщение в зависимости от него
-      message: statusCode === 500
-        ? 'На сервере произошла ошибка'
-        : message,
-    });
-  next();
-});
+// централизованный обработчик
+app.use(errorHandler);
 
 app.listen(PORT);
