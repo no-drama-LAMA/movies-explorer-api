@@ -21,7 +21,9 @@ module.exports.updateUser = (req, res, next) => {
     .orFail()
     .then((user) => res.status(200).send(user))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.code === 11000) {
+        next(new ConflictError('Пользователь уже существует'));
+      } else if (err.name === 'ValidationError') {
         next(new BadRequestError(err.message));
       } else if (err.name === 'DocumentNotFoundError') {
         next(new NotFoundError('Пользователь не найден'));
@@ -61,46 +63,10 @@ module.exports.login = (req, res, next) => {
       const token = jwt.sign(
         { _id: user._id },
         SECRET_KEY,
-        { expiresIn: '7d' }, // токен будет просрочен через час после создания
+        { expiresIn: '7d' }, // токен будет просрочен через неделю после создания
       );
       // вернём токен
       res.send({ token });
     })
     .catch(next);
-};
-
-module.exports.getUsers = (req, res, next) => {
-  User.find({})
-    .then((users) => res.send({ users }))
-    .catch(next);
-};
-
-module.exports.getUserId = (req, res, next) => {
-  User.findById(req.params.userId)
-    .orFail()
-    .then((user) => { res.send(user); })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new BadRequestError('Переданы некорректные данные'));
-      } else if (err.name === 'DocumentNotFoundError') {
-        next(new NotFoundError('Пользователь не найден'));
-      } else {
-        next(err);
-      }
-    });
-};
-
-module.exports.updateAvatar = (req, res, next) => {
-  User.findByIdAndUpdate(req.user._id, { avatar: req.body.avatar }, { new: 'true', runValidators: true })
-    .orFail()
-    .then((user) => res.send(user))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next(new BadRequestError(err.message));
-      } else if (err.name === 'DocumentNotFoundError') {
-        next(new NotFoundError('Пользователь не найден'));
-      } else {
-        next(err);
-      }
-    });
 };
