@@ -14,11 +14,11 @@ const movieSchema = new mongoose.Schema({
     type: Number, // это число
     required: [true, 'Заполните это поле.'], // обязательное поле
   },
-  year: {
+  description: {
     type: String, // это строка
     required: [true, 'Заполните это поле.'], // обязательное поле
   },
-  description: {
+  year: {
     type: String, // это строка
     required: [true, 'Заполните это поле.'], // обязательное поле
   },
@@ -38,6 +38,14 @@ const movieSchema = new mongoose.Schema({
       message: 'URL указан неправильно',
     },
   },
+  nameRU: {
+    type: String, // это строка
+    required: [true, 'Заполните это поле.'], // обязательное поле
+  },
+  nameEN: {
+    type: String, // это строка
+    required: [true, 'Заполните это поле.'], // обязательное поле
+  },
   thumbnail: {
     type: String, // это строка
     required: [true, 'Заполните это поле.'], // обязательное поле
@@ -46,22 +54,14 @@ const movieSchema = new mongoose.Schema({
       message: 'URL указан неправильно',
     },
   },
-  owner: {
-    type: mongoose.Schema.Types.ObjectId, // тип ObjectId
-    required: true, // обязательное поле
-    ref: 'user',
-  },
   movieId: {
     type: Number, // это число
     required: [true, 'Заполните это поле.'], // обязательное поле
   },
-  nameRU: {
-    type: String, // это строка
-    required: [true, 'Заполните это поле.'], // обязательное поле
-  },
-  nameEN: {
-    type: String, // это строка
-    required: [true, 'Заполните это поле.'], // обязательное поле
+  owner: {
+    type: mongoose.Schema.Types.ObjectId, // тип ObjectId
+    required: true, // обязательное поле
+    ref: 'user',
   },
 }, { versionKey: false });
 
